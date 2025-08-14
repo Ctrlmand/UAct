@@ -1,0 +1,11 @@
+{
+	"Dictionary<string, string>":
+	{
+		"_BaseMap": "BaseMap",
+		"_MetallicGlossMap": "Metallic",
+		"_BumpMap": "Normal",
+		"_ParallaxMap": "Height",
+		"_OcclusionMap": "AO",
+		"_EmissionMap": "Emission"
+	}
+}
