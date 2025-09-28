@@ -148,7 +148,7 @@ namespace UAct.Batch
 
         private static Dictionary<string, string> ReadMapInfo(string mapInfo)
         {
-            Dictionary<string, string> map = new();
+            Dictionary<string, string> map = new Dictionary<string, string>();
             string[] mapData = mapInfo.Split("\n");
             foreach (string rowData in mapData)
             {

@@ -31,7 +31,7 @@ namespace UAct.Batch
                 if (importer!=null) CleanNullExternalAssets(importer);
 
                 // Get embedded materials
-                List<Material> embeddedMaterials = new();
+                List<Material> embeddedMaterials = new List<Material>();
                 foreach (var item in AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(obj))) {
                     if (item is Material mat) {
                         embeddedMaterials.Add(mat);

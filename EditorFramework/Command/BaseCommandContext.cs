@@ -6,7 +6,7 @@ namespace UAct
 
 	public class BaseCommandContext : ICommandContext
 	{
-		private Dictionary<Type, object> _data = new();
+		private Dictionary<Type, object> _data = new Dictionary<Type, object>();
 
 		public BaseCommandContext() { }
 		public BaseCommandContext(object data) => SetData(data);
