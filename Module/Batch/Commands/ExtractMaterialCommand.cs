@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.IO;
 
 namespace UAct.Batch
 {
-	using System.IO;
 	using Util;
 
     public class ExtractMaterialCommand : ICommand
@@ -28,7 +28,7 @@ namespace UAct.Batch
                 string targetFolder = AssetMethod.CreateMatFolderForObj(obj, "Materials");
                 // Get model importer and clean null external assets
                 ModelImporter importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(obj)) as ModelImporter;
-                if (importer!=null) CleanNullExternalAssets(importer);
+                if (importer!=null) ImporterUtil.CleanNullExternalAssets(importer);
 
                 // Get embedded materials
                 List<Material> embeddedMaterials = new List<Material>();
@@ -61,25 +61,6 @@ namespace UAct.Batch
             return;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="importer"></param>
-        public static void CleanNullExternalAssets(ModelImporter importer)
-        {
-            string path = AssetDatabase.GetAssetPath(importer);
-            var map = importer.GetExternalObjectMap();
-            foreach (var item in map)
-            {
-                if (item.Value == null)
-                {
-                    importer.RemoveRemap(item.Key);
-                }
-            }
-            AssetDatabase.WriteImportSettingsIfDirty(path);
-            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
-            return;
-        }
         private Material CreateMaterial(string folderPath, string matName, Shader shader)
         {
             Material mat = new Material(shader);

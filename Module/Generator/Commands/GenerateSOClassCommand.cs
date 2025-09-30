@@ -120,12 +120,5 @@ namespace UAct.Generator
 			return sb.ToString();
 		}
 	}
-	public class GenerateSOClassContext : BaseCommandContext
-	{
-		public GenerateSOClassContext(string sheetPath)
-		{
-			SetData(sheetPath);
-		}
-	}
 
 }
