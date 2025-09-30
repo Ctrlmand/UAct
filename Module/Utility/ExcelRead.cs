@@ -38,8 +38,8 @@ namespace UAct.Util
 
 				object[] fieldTypes = ReadOneRow(sheet, 2);
 				object[] fieldNames = ReadOneRow(sheet, 1);
-
-				fieldData = new();
+				
+				fieldData = new List<(object fieldType, object fieldName)>();
 				for (int i = 0; i < fieldNames.Length; i++)
 				{
 					fieldData.Add((fieldTypes[i], fieldNames[i]));

@@ -5,10 +5,11 @@ using System.IO;
 
 namespace UAct.Batch
 {
-
 	using Util;
+    
     public class AssignTextureCommand : ICommand
     {
+
         private static string DEFAULT_MAP_PATH = $"{AssetMethod.GetPresetPath()}/DefaultMap.json";
 
         public void Execute(ICommandContext context)
@@ -85,7 +86,7 @@ namespace UAct.Batch
             if (File.Exists(DEFAULT_MAP_PATH))
             {
                 string prefixDirString = Path.GetDirectoryName(Application.dataPath).Replace(@"\", "/");
-                string assetPath  = DEFAULT_MAP_PATH.Replace(prefixDirString+"/", string.Empty);
+                string assetPath = DEFAULT_MAP_PATH.Replace(prefixDirString + "/", string.Empty);
                 return AssetDatabase.LoadAssetAtPath<Object>(assetPath);
             }
 
@@ -94,12 +95,10 @@ namespace UAct.Batch
             Dictionary<string, string> dict;
             dict = new Dictionary<string, string>()
             {
-                { "_BaseMap", "BaseMap" },
-                { "_MetallicGlossMap", "Metallic" },
-                { "_BumpMap", "Normal" },
-                { "_ParallaxMap", "Height" },
-                { "_OcclusionMap", "AO" },
-                { "_EmissionMap", "Emission" },
+                { "_AORM", "AORM" },
+                { "_BaseColor", "BaseColor" },
+                { "_Normal", "Normal" },
+                { "_Emission", "Emission" },
             };
             string jsonString = SerializeData.DictionaryToJson(dict);
 
@@ -148,7 +147,7 @@ namespace UAct.Batch
 
         private static Dictionary<string, string> ReadMapInfo(string mapInfo)
         {
-            Dictionary<string, string> map = new();
+            Dictionary<string, string> map = new Dictionary<string, string>();
             string[] mapData = mapInfo.Split("\n");
             foreach (string rowData in mapData)
             {
@@ -163,11 +162,12 @@ namespace UAct.Batch
             }
             return map;
         }
+
     }
 
     public class AssignTextureContext : BaseCommandContext
     {
-        public AssignTextureContext(bool isUseConfigFile, Object jsonObject,string mapInfo)
+        public AssignTextureContext(bool isUseConfigFile, Object jsonObject, string mapInfo)
         {
             SetData(isUseConfigFile);
             SetData(jsonObject);

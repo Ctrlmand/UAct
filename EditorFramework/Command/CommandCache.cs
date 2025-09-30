@@ -5,7 +5,7 @@ namespace UAct
 {
     public static class CommandCache
     {
-        private static Dictionary<Type, ICommand> m_Commands = new();
+        private static Dictionary<Type, ICommand> m_Commands = new Dictionary<Type, ICommand>();
 
         public static T GetCommand<T>() where T : ICommand, new()
         {

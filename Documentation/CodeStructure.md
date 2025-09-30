@@ -86,7 +86,7 @@ public interface ICommand
 ```csharp
 public static class CommandCache
 {
-    private static Dictionary<Type, ICommand> m_Commands = new();
+    private static Dictionary<Type, ICommand> m_Commands = new Dictionary<Type, ICommand>();
 
     public static T GetCommand<T>() where T : ICommand, new()
     {
@@ -116,7 +116,7 @@ public interface ICommandContext
 
 public class BaseCommandContext : ICommandContext
 {
-    private Dictionary<Type, object> _data = new();
+    private Dictionary<Type, object> _data = newDictionary<Type, object>();
     // 实现接口方法...
 }
 ```
