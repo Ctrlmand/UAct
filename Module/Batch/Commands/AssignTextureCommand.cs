@@ -18,8 +18,20 @@ namespace UAct.Batch
             bool isUseConfigFile = context.GetData<bool>();
             Object jsonObject = (context.GetData<Object>() != null) ? context.GetData<Object>() : LoadDefaultPreset();
             string jsonPath = AssetDatabase.GetAssetPath(jsonObject);
-            string mapInfo = context.GetData<string>();
+            string[] mapInfo_prefix = context.GetData<string[]>();
 
+            if (mapInfo_prefix.Length != 3)
+            {
+                Debug.LogError("mapInfo_prefix must be 3 elements.");
+                return;
+            }
+
+            string mapInfo = mapInfo_prefix[0];
+            string matPrefix = mapInfo_prefix[1];
+            string texPrefix = mapInfo_prefix[2];
+
+            if (matPrefix.Length == 0) matPrefix = "/";
+            if (texPrefix.Length == 0) texPrefix = "/";
 
             foreach (Object obj in Selection.objects)
             {
@@ -30,7 +42,7 @@ namespace UAct.Batch
                     texPropMap = isUseConfigFile ? SerializeData.ReadDictionaryJson(jsonPath) : ReadMapInfo(mapInfo);
                     if (texPropMap == null) return;
                     // Do it
-                    ProcessMaterial(mat, texPropMap);
+                    ProcessMaterial(mat, texPropMap, matPrefix, texPrefix);
                 }
                 else
                 {
@@ -109,7 +121,7 @@ namespace UAct.Batch
 
         }
 
-        private void ProcessMaterial(Material mat, Dictionary<string, string> texPropMap)
+        private void ProcessMaterial(Material mat, Dictionary<string, string> texPropMap, string matPrefix = "", string texPrefix = "")
         {
             // Get Textures folder path
             string matPath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(mat));
@@ -120,13 +132,20 @@ namespace UAct.Batch
             // Traverse texture properties
             foreach (var property in texPropMap)
             {
+                // Debug.Log($"propertyName: {property.Key}, textureType: {property.Value}");
                 string propertyName = property.Key;
                 string textureType = property.Value;
+                
                 // not has property
-                if (!mat.HasProperty(propertyName)) continue;
+                if (!mat.HasProperty(propertyName))
+                {
+					Debug.LogWarning($"[{mat.name}] No Property: {propertyName}.");
+                    continue;
+				}
+                
 
                 // Construct expected texture name
-                string expectedTextureName = $"{mat.name}_{textureType}";
+                string expectedTextureName = $"{texPrefix}{mat.name.Replace(matPrefix, "")}_{textureType}".Replace("/", "");
                 // Debug.Log($"expectedTexName: {expectedTextureName}");
 
                 // Found texture
@@ -167,11 +186,11 @@ namespace UAct.Batch
 
     public class AssignTextureContext : BaseCommandContext
     {
-        public AssignTextureContext(bool isUseConfigFile, Object jsonObject, string mapInfo)
+        public AssignTextureContext(bool isUseConfigFile, Object jsonObject, string[] mapInfo_prefix)
         {
             SetData(isUseConfigFile);
             SetData(jsonObject);
-            SetData(mapInfo);
+            SetData(mapInfo_prefix);
         }
     }
 }

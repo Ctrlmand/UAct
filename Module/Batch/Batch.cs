@@ -9,6 +9,8 @@ namespace UAct.Batch
 		Object remapMatDirectory;
 		Object configFile;
 		string mapInfo = "BaseMap => _BaseMap\nMetallic => _MetallicGlossMap\nNormal => _BumpMap\nHeight => _ParallaxMap\nAO => _OcclusionMap\nEmission => _EmissionMap";
+		string matPrefix = "";
+		string texPrefix = "";
 		bool useConfigFile = true;
 		
 
@@ -46,7 +48,9 @@ namespace UAct.Batch
 				if (GUILayout.Button("Store Preset", EditorStyles.toolbarButton)) AssignTextureCommand.StorePreset(mapInfo);
 				
 			}
-			CommandButton<AssignTextureCommand>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, mapInfo));
+			matPrefix = EditorGUILayout.TextField("Material Prefix", matPrefix);
+			texPrefix = EditorGUILayout.TextField("Texture Prefix", texPrefix);
+			CommandButton<AssignTextureCommand>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, new string[] {mapInfo, matPrefix, texPrefix}));
 
 			// Texture Tools
 			GUILayout.Space(10);
