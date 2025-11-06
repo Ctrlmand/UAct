@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using UnityEngine;
 namespace UAct
 {
 
@@ -16,14 +16,18 @@ namespace UAct
 			return _data.TryGetValue(typeof(T), out object value) ? (T)value : default;
 		}
 
-		public bool HasData<T>()
-		{
-			return _data.ContainsKey(typeof(T));
-		}
-
-		public void SetData<T>(T data)
+		public BaseCommandContext SetData<T>(T data)
 		{
 			_data[typeof(T)] = data;
+			return this;
+		}
+		
+		public void ShowAll()
+		{
+			foreach (var item in _data)
+			{
+				Debug.Log($"{item.Key} => {item.Value}");
+			}
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace UAct.Batch
 		string matDir = null;
 		public void Execute(ICommandContext context)
 		{
-			matDir = context.GetData<object>() as string;
+			matDir = context.GetData<string>();
 			Debug.Log(matDir);
 			if (matDir == null)
 			{

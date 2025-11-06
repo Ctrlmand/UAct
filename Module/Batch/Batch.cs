@@ -27,9 +27,10 @@ namespace UAct.Batch
 			// Model Tools
 			GUILayout.Label("Model Tool", EditorStyles.boldLabel);
 			shader = EditorGUILayout.ObjectField("Material Shader", shader, typeof(Shader), false) as Shader;
-			CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext(shader));
+			CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext().SetData(shader));
+			// CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext(shader));
 			remapMatDirectory = EditorGUILayout.ObjectField("Remap Mat Folder", remapMatDirectory, typeof(Object), false);
-			CommandButton<BatchRemapMatCommand>("Remap Material", new BaseCommandContext(AssetDatabase.GetAssetPath(remapMatDirectory)));
+			CommandButton<BatchRemapMatCommand>("Remap Material", new BaseCommandContext().SetData(AssetDatabase.GetAssetPath(remapMatDirectory)));
 			CommandButton<FbxToPrefabs>("Convert FBX to Prefabs");
 			
 			// Material Tools

@@ -52,7 +52,7 @@ namespace UAct.Util
             string[] subDirs = Directory.GetDirectories(dirPath);
             foreach (string dir in subDirs)
             {
-                Debug.Log(dir);
+                // Debug.Log(dir);
                 if (dir.EndsWith(dirName))
                 {
                     return dir;
