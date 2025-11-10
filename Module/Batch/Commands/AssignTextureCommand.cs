@@ -158,7 +158,7 @@ namespace UAct.Batch
                 }
 
                 // Not found
-                Debug.LogWarning($"[{mat.name}] NotFound: {textureType}.");
+                Debug.LogWarning($"[{mat.name}] NotFound: {expectedTextureName}.");
 
             }
 

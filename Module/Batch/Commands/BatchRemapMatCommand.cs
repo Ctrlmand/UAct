@@ -38,8 +38,9 @@ namespace UAct.Batch
 				// Apply
 				string assetPath = AssetDatabase.GetAssetPath(obj);
 				AssetDatabase.WriteImportSettingsIfDirty(assetPath);
-				AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+				// AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
 			}
+			AssetDatabase.Refresh();
 		}
 
 		private void SearchRemapInTarget()
@@ -75,8 +76,10 @@ namespace UAct.Batch
 				// Apply
 				string assetPath = AssetDatabase.GetAssetPath(item);
 				AssetDatabase.WriteImportSettingsIfDirty(assetPath);
-				AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+				// AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
 			}
+			AssetDatabase.Refresh();
+
 		}
 
 	}
