@@ -31,27 +31,37 @@ namespace UAct.Batch
 			// CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext(shader));
 			remapMatDirectory = EditorGUILayout.ObjectField("Remap Mat Folder", remapMatDirectory, typeof(Object), false);
 			CommandButton<BatchRemapMatCommand>("Remap Material", new BaseCommandContext().SetData(AssetDatabase.GetAssetPath(remapMatDirectory)));
-			CommandButton<FbxToPrefabs>("Convert FBX to Prefabs");
 			
 			// Material Tools
-			GUILayout.Space(10);
+			GUILayout.Space(15);
 			GUILayout.Label("Material Tools", EditorStyles.boldLabel);
 			// Use config file or not
 			useConfigFile = EditorGUILayout.Toggle("Use Config File", useConfigFile);
 			if (useConfigFile)
 			{
-				configFile = EditorGUILayout.ObjectField("Config File", configFile, typeof(Object), false);
+				// Config File
+				configFile = EditorGUILayout.ObjectField("Config File", configFile, typeof(TextAsset), false);
 			}
 			else
 			{
+				// Map Info
 				GUILayout.Label("{Texture suffix} => {Shader properties}\nMeans assign a Prefix_{Texture suffix} tex to _{Shader properties}", EditorStyles.helpBox);
 				mapInfo = EditorGUILayout.TextArea(mapInfo, GUILayout.Height(100), GUILayout.ExpandWidth(true));
-				if (GUILayout.Button("Store Preset", EditorStyles.toolbarButton)) AssignTextureCommand.StorePreset(mapInfo);
 				
+				GUILayout.BeginHorizontal();
+				if (GUILayout.Button("Store Preset")) AssignTextureCommand.StorePreset(mapInfo);
+				if (GUILayout.Button("Generate By Selected Material")) AssignTextureCommand.GenerateMapConfigBySelected(ref mapInfo);
+				GUILayout.EndHorizontal();
+
 			}
 			matPrefix = EditorGUILayout.TextField("Material Prefix", matPrefix);
 			texPrefix = EditorGUILayout.TextField("Texture Prefix", texPrefix);
 			CommandButton<AssignTextureCommand>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, new string[] {mapInfo, matPrefix, texPrefix}));
+			
+			// Prefab
+			GUILayout.Space(15);
+			GUILayout.Label("Prefab", EditorStyles.boldLabel);
+			CommandButton<FbxToPrefabs>("FBX to Prefabs");
 
 			// Texture Tools
 			GUILayout.Space(10);

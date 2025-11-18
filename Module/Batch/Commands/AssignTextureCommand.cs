@@ -53,7 +53,7 @@ namespace UAct.Batch
 
             return;
         }
-
+        //-------------------------------------------------------------------------------------------
         public static void StorePreset(string mapInfo)
         {
             string filePath = EditorUtility.SaveFilePanelInProject("Save Preset", "MapPreset", "json", "Save Preset");
@@ -73,6 +73,31 @@ namespace UAct.Batch
 
             Debug.Log($"Done.");
         }
+
+        public static void GenerateMapConfigBySelected(ref string mapInfo)
+        {
+            Object active = Selection.activeObject;
+            if (active.GetType() != typeof(Material))
+            {
+                Debug.LogError($"Selecte a {active.GetType()}, Please select a Material.");
+                return;
+            }
+            Material mat = active as Material;
+            string targetMap = "";
+            Shader shader = mat.shader;
+
+            int propertyCount = shader.GetPropertyCount();
+            for (int i = 0; i < propertyCount; i++)
+            {
+                string propType = shader.GetPropertyType(i).ToString();
+                if (propType != "Texture") continue;
+                string propName = shader.GetPropertyName(i);
+                if (propName.StartsWith("unity")) continue;
+                targetMap += $"{propName.Replace("_", "")} => {propName}\n";
+            }
+
+            mapInfo = targetMap;
+		}
         //-------------------------------------------------------------------------------------------
 
         private Texture2D FindTexture(string expectedTextureName, string texDir)
