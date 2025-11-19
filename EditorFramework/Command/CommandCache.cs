@@ -5,9 +5,9 @@ namespace UAct
 {
     public static class CommandCache
     {
-        private static Dictionary<Type, ICommand> m_Commands = new();
+        private static Dictionary<Type, ICommand> m_Commands = new Dictionary<Type, ICommand>();
 
-        public static T GetCommand<T>() where T : ICommand, new()
+        private static T GetCommand<T>() where T : ICommand, new()
         {
             if (!m_Commands.TryGetValue(typeof(T), out var command))
             {
@@ -16,6 +16,11 @@ namespace UAct
             }
             return (T)command;
         }
+        public static void CallCommand<T>(ICommandContext context = null) where T : ICommand, new()
+        {
+            GetCommand<T>().Execute(context);
+        }
+
         public static void Clear()
         {
             m_Commands.Clear();

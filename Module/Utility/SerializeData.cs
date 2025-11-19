@@ -44,7 +44,7 @@ namespace UAct.Util
 			if (!filePath.EndsWith(".json") || !File.Exists(filePath)) return null;
 			string json = File.ReadAllText(filePath);
 
-			Dictionary<string, string> dict = new();
+			Dictionary<string, string> dict = new Dictionary<string, string>();
 			string cleanJson = json.Replace("\n", string.Empty).Replace("\r", string.Empty).Replace("\t", string.Empty).Replace(" ", string.Empty);
 			if (!cleanJson.StartsWith("{\"Dictionary<string,string>\"") || !cleanJson.EndsWith("}}"))
 			{

@@ -5,10 +5,11 @@ using System.IO;
 
 namespace UAct.Batch
 {
-
 	using Util;
+    
     public class AssignTextureCommand : ICommand
     {
+
         private static string DEFAULT_MAP_PATH = $"{AssetMethod.GetPresetPath()}/DefaultMap.json";
 
         public void Execute(ICommandContext context)
@@ -17,8 +18,20 @@ namespace UAct.Batch
             bool isUseConfigFile = context.GetData<bool>();
             Object jsonObject = (context.GetData<Object>() != null) ? context.GetData<Object>() : LoadDefaultPreset();
             string jsonPath = AssetDatabase.GetAssetPath(jsonObject);
-            string mapInfo = context.GetData<string>();
+            string[] mapInfo_prefix = context.GetData<string[]>();
 
+            if (mapInfo_prefix.Length != 3)
+            {
+                Debug.LogError("mapInfo_prefix must be 3 elements.");
+                return;
+            }
+
+            string mapInfo = mapInfo_prefix[0];
+            string matPrefix = mapInfo_prefix[1];
+            string texPrefix = mapInfo_prefix[2];
+
+            if (matPrefix.Length == 0) matPrefix = "/";
+            if (texPrefix.Length == 0) texPrefix = "/";
 
             foreach (Object obj in Selection.objects)
             {
@@ -29,7 +42,7 @@ namespace UAct.Batch
                     texPropMap = isUseConfigFile ? SerializeData.ReadDictionaryJson(jsonPath) : ReadMapInfo(mapInfo);
                     if (texPropMap == null) return;
                     // Do it
-                    ProcessMaterial(mat, texPropMap);
+                    ProcessMaterial(mat, texPropMap, matPrefix, texPrefix);
                 }
                 else
                 {
@@ -40,7 +53,7 @@ namespace UAct.Batch
 
             return;
         }
-
+        //-------------------------------------------------------------------------------------------
         public static void StorePreset(string mapInfo)
         {
             string filePath = EditorUtility.SaveFilePanelInProject("Save Preset", "MapPreset", "json", "Save Preset");
@@ -60,6 +73,31 @@ namespace UAct.Batch
 
             Debug.Log($"Done.");
         }
+
+        public static void GenerateMapConfigBySelected(ref string mapInfo)
+        {
+            Object active = Selection.activeObject;
+            if (active.GetType() != typeof(Material))
+            {
+                Debug.LogError($"Selecte a {active.GetType()}, Please select a Material.");
+                return;
+            }
+            Material mat = active as Material;
+            string targetMap = "";
+            Shader shader = mat.shader;
+
+            int propertyCount = shader.GetPropertyCount();
+            for (int i = 0; i < propertyCount; i++)
+            {
+                string propType = shader.GetPropertyType(i).ToString();
+                if (propType != "Texture") continue;
+                string propName = shader.GetPropertyName(i);
+                if (propName.StartsWith("unity")) continue;
+                targetMap += $"{propName.Replace("_", "")} => {propName}\n";
+            }
+
+            mapInfo = targetMap;
+		}
         //-------------------------------------------------------------------------------------------
 
         private Texture2D FindTexture(string expectedTextureName, string texDir)
@@ -85,7 +123,7 @@ namespace UAct.Batch
             if (File.Exists(DEFAULT_MAP_PATH))
             {
                 string prefixDirString = Path.GetDirectoryName(Application.dataPath).Replace(@"\", "/");
-                string assetPath  = DEFAULT_MAP_PATH.Replace(prefixDirString+"/", string.Empty);
+                string assetPath = DEFAULT_MAP_PATH.Replace(prefixDirString + "/", string.Empty);
                 return AssetDatabase.LoadAssetAtPath<Object>(assetPath);
             }
 
@@ -94,12 +132,10 @@ namespace UAct.Batch
             Dictionary<string, string> dict;
             dict = new Dictionary<string, string>()
             {
-                { "_BaseMap", "BaseMap" },
-                { "_MetallicGlossMap", "Metallic" },
-                { "_BumpMap", "Normal" },
-                { "_ParallaxMap", "Height" },
-                { "_OcclusionMap", "AO" },
-                { "_EmissionMap", "Emission" },
+                { "_AORM", "AORM" },
+                { "_BaseColor", "BaseColor" },
+                { "_Normal", "Normal" },
+                { "_Emission", "Emission" },
             };
             string jsonString = SerializeData.DictionaryToJson(dict);
 
@@ -110,7 +146,7 @@ namespace UAct.Batch
 
         }
 
-        private void ProcessMaterial(Material mat, Dictionary<string, string> texPropMap)
+        private void ProcessMaterial(Material mat, Dictionary<string, string> texPropMap, string matPrefix = "", string texPrefix = "")
         {
             // Get Textures folder path
             string matPath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(mat));
@@ -121,13 +157,20 @@ namespace UAct.Batch
             // Traverse texture properties
             foreach (var property in texPropMap)
             {
+                // Debug.Log($"propertyName: {property.Key}, textureType: {property.Value}");
                 string propertyName = property.Key;
                 string textureType = property.Value;
+                
                 // not has property
-                if (!mat.HasProperty(propertyName)) continue;
+                if (!mat.HasProperty(propertyName))
+                {
+					Debug.LogWarning($"[{mat.name}] No Property: {propertyName}.");
+                    continue;
+				}
+                
 
                 // Construct expected texture name
-                string expectedTextureName = $"{mat.name}_{textureType}";
+                string expectedTextureName = $"{texPrefix}{mat.name.Replace(matPrefix, "")}_{textureType}".Replace("/", "");
                 // Debug.Log($"expectedTexName: {expectedTextureName}");
 
                 // Found texture
@@ -140,7 +183,7 @@ namespace UAct.Batch
                 }
 
                 // Not found
-                Debug.LogWarning($"[{mat.name}] NotFound: {textureType}.");
+                Debug.LogWarning($"[{mat.name}] NotFound: {expectedTextureName}.");
 
             }
 
@@ -148,7 +191,7 @@ namespace UAct.Batch
 
         private static Dictionary<string, string> ReadMapInfo(string mapInfo)
         {
-            Dictionary<string, string> map = new();
+            Dictionary<string, string> map = new Dictionary<string, string>();
             string[] mapData = mapInfo.Split("\n");
             foreach (string rowData in mapData)
             {
@@ -163,15 +206,16 @@ namespace UAct.Batch
             }
             return map;
         }
+
     }
 
     public class AssignTextureContext : BaseCommandContext
     {
-        public AssignTextureContext(bool isUseConfigFile, Object jsonObject,string mapInfo)
+        public AssignTextureContext(bool isUseConfigFile, Object jsonObject, string[] mapInfo_prefix)
         {
             SetData(isUseConfigFile);
             SetData(jsonObject);
-            SetData(mapInfo);
+            SetData(mapInfo_prefix);
         }
     }
 }
