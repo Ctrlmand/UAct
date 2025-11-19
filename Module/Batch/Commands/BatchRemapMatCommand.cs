@@ -11,7 +11,7 @@ namespace UAct.Batch
 		string matDir = null;
 		public void Execute(ICommandContext context)
 		{
-			matDir = context.GetData<object>() as string;
+			matDir = context.GetData<string>();
 			Debug.Log(matDir);
 			if (matDir == null)
 			{
@@ -38,8 +38,9 @@ namespace UAct.Batch
 				// Apply
 				string assetPath = AssetDatabase.GetAssetPath(obj);
 				AssetDatabase.WriteImportSettingsIfDirty(assetPath);
-				AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+				// AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
 			}
+			AssetDatabase.Refresh();
 		}
 
 		private void SearchRemapInTarget()
@@ -75,8 +76,10 @@ namespace UAct.Batch
 				// Apply
 				string assetPath = AssetDatabase.GetAssetPath(item);
 				AssetDatabase.WriteImportSettingsIfDirty(assetPath);
-				AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+				// AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
 			}
+			AssetDatabase.Refresh();
+
 		}
 
 	}

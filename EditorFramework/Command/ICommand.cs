@@ -10,8 +10,9 @@ namespace UAct
     public interface ICommandContext
     {
         T GetData<T>();
-        void SetData<T>(T data);
-        bool HasData<T>();
+        BaseCommandContext SetData<T>(T data);
+        void ShowAll();
+
     }
 
 }
