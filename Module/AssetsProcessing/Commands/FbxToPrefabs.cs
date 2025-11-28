@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UAct.Batch
+namespace UAct.AssetsProcessing
 {
 
 	public class FbxToPrefabs : ICommand
