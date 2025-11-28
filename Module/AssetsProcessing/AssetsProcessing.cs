@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UAct.Batch
+namespace UAct.AssetsProcessing
 {
 	public class AutoAssignTextures : EditorWindowBase
 	{
@@ -14,11 +14,11 @@ namespace UAct.Batch
 		bool useConfigFile = true;
 		
 
-		[MenuItem("UAct/Batch", false, 0)]
+		[MenuItem("UAct/AssetsProcessing", false, 0)]
 		public static void ShowWindow()
 		{
 			var window = GetWindow<AutoAssignTextures>();
-			window.titleContent = new GUIContent("Batch");
+			window.titleContent = new GUIContent("AssetsProcessing");
 			window.Show();
 		}
 
