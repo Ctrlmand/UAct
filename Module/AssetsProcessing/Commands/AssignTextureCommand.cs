@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UAct.Batch
+namespace UAct.AssetsProcessing
 {
 	using Util;
     

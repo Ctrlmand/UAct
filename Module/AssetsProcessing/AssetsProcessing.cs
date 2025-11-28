@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UAct.Batch
+namespace UAct.AssetsProcessing
 {
 	public class AutoAssignTextures : EditorWindowBase
 	{
@@ -12,13 +12,16 @@ namespace UAct.Batch
 		string matPrefix = "";
 		string texPrefix = "";
 		bool useConfigFile = true;
-		
 
-		[MenuItem("UAct/Batch", false, 0)]
+		string newName = "";
+		string newNameSuffix = "";
+
+
+		[MenuItem("UAct/AssetsProcessing", false, 0)]
 		public static void ShowWindow()
 		{
 			var window = GetWindow<AutoAssignTextures>();
-			window.titleContent = new GUIContent("Batch");
+			window.titleContent = new GUIContent("AssetsProcessing");
 			window.Show();
 		}
 
@@ -68,6 +71,12 @@ namespace UAct.Batch
 			GUILayout.Label("Texture Tools", EditorStyles.boldLabel);
 			CommandButton<InvertGChannelCommand>("Invert G Channel");
 
+			GUILayout.Space(10);
+			GUILayout.Label("资产重命名", EditorStyles.boldLabel);
+			newName = EditorGUILayout.TextField("新名称", newName);
+			newNameSuffix = EditorGUILayout.TextField("后缀", newNameSuffix);
+
+			CommandButton<RenameAssetsCommand>("重命名", new BaseCommandContext().SetData(new string[] { newName, newNameSuffix }));
 		}
 
 	}
