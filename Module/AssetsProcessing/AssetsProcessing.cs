@@ -12,7 +12,10 @@ namespace UAct.AssetsProcessing
 		string matPrefix = "";
 		string texPrefix = "";
 		bool useConfigFile = true;
-		
+
+		string newName = "";
+		string newNameSuffix = "";
+
 
 		[MenuItem("UAct/AssetsProcessing", false, 0)]
 		public static void ShowWindow()
@@ -68,6 +71,12 @@ namespace UAct.AssetsProcessing
 			GUILayout.Label("Texture Tools", EditorStyles.boldLabel);
 			CommandButton<InvertGChannelCommand>("Invert G Channel");
 
+			GUILayout.Space(10);
+			GUILayout.Label("资产重命名", EditorStyles.boldLabel);
+			newName = EditorGUILayout.TextField("新名称", newName);
+			newNameSuffix = EditorGUILayout.TextField("后缀", newNameSuffix);
+
+			CommandButton<RenameAssetsCommand>("重命名", new BaseCommandContext().SetData(new string[] { newName, newNameSuffix }));
 		}
 
 	}
