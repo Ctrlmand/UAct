@@ -14,7 +14,7 @@ namespace UAct.AssetsProcessing
         {
             // find shader
             Shader shader = context.GetData<Shader>();
-            context.ShowAll();
+            context.ShowData();
 
             shader = shader ?? GetPipelineShader();
             if (shader == null)
