@@ -22,11 +22,11 @@ namespace UAct
 			return this;
 		}
 		
-		public void ShowAll()
+		public void ShowData()
 		{
 			foreach (var item in _data)
 			{
-				Debug.Log($"{item.Key} => {item.Value}");
+				Debug.Log($"{item.Key}: {item.Value}");
 			}
 		}
 	}
