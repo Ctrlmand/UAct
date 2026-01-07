@@ -28,16 +28,17 @@ namespace UAct.AssetsProcessing
 		void OnGUI()
 		{
 			// Model Tools
-			GUILayout.Label("Model Tool", EditorStyles.boldLabel);
+			GUILayout.Label("Model", EditorStyles.boldLabel);
 			shader = EditorGUILayout.ObjectField("Material Shader", shader, typeof(Shader), false) as Shader;
 			CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext().SetData(shader));
-			// CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext(shader));
+			GUILayout.Space(10);
+
 			remapMatDirectory = EditorGUILayout.ObjectField("Remap Mat Folder", remapMatDirectory, typeof(Object), false);
 			CommandButton<BatchRemapMatCommand>("Remap Material", new BaseCommandContext().SetData(AssetDatabase.GetAssetPath(remapMatDirectory)));
 			
 			// Material Tools
 			GUILayout.Space(15);
-			GUILayout.Label("Material Tools", EditorStyles.boldLabel);
+			GUILayout.Label("Material", EditorStyles.boldLabel);
 			// Use config file or not
 			useConfigFile = EditorGUILayout.Toggle("Use Config File", useConfigFile);
 			if (useConfigFile)
@@ -57,9 +58,9 @@ namespace UAct.AssetsProcessing
 				GUILayout.EndHorizontal();
 
 			}
+			CommandButton<AssignTextureCommand>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, new string[] {mapInfo, matPrefix, texPrefix}));
 			matPrefix = EditorGUILayout.TextField("Material Prefix", matPrefix);
 			texPrefix = EditorGUILayout.TextField("Texture Prefix", texPrefix);
-			CommandButton<AssignTextureCommand>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, new string[] {mapInfo, matPrefix, texPrefix}));
 			
 			// Prefab
 			GUILayout.Space(15);
@@ -68,7 +69,7 @@ namespace UAct.AssetsProcessing
 
 			// Texture Tools
 			GUILayout.Space(10);
-			GUILayout.Label("Texture Tools", EditorStyles.boldLabel);
+			GUILayout.Label("Texture", EditorStyles.boldLabel);
 			CommandButton<InvertGChannelCommand>("Invert G Channel");
 
 			GUILayout.Space(10);
