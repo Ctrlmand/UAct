@@ -10,6 +10,7 @@ namespace UAct.AssetsProcessing
 	{
 		public void Execute(ICommandContext context)
 		{
+			if (!Directory.Exists("Assets/Prefabs")) Directory.CreateDirectory("Assets/Prefabs");
 			string savePath = EditorUtility.OpenFolderPanel("Save Prefabs", "Assets/Prefabs", "");
 			if (string.IsNullOrEmpty(savePath)) return;
 

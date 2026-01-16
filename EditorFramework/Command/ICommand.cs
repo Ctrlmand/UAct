@@ -11,7 +11,7 @@ namespace UAct
     {
         T GetData<T>();
         BaseCommandContext SetData<T>(T data);
-        void ShowAll();
+        void ShowData();
 
     }
 
