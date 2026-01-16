@@ -1,6 +1,9 @@
-using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace UAct.Util
@@ -17,35 +20,28 @@ namespace UAct.Util
 		/// <param name="fieldTypes"></param>
 		public static void ReadField(string sheetPath, out List<(object fieldType, object fieldName)> fieldData)
 		{
-
-			// Try to read the Excel file
-			FileInfo fileInfo = TryRead(sheetPath);
-
-			// Not A good file
-			if (fileInfo == null)
+			if (!TryRead(sheetPath, out var worksheet, out var sharedStrings))
 			{
 				Debug.LogWarning("Not a good Excel file or file not found.");
 				fieldData = null;
 				return;
 			}
 
-			using (ExcelPackage package = new ExcelPackage(fileInfo))
+			var rows = ParseWorksheet(worksheet, sharedStrings);
+			if (rows.Count < 2)
 			{
-				ExcelWorksheet sheet = package.Workbook.Worksheets[1];
-
-				int rowCount = sheet.Dimension.Rows;
-				int colCount = sheet.Dimension.Columns;
-
-				object[] fieldTypes = ReadOneRow(sheet, 2);
-				object[] fieldNames = ReadOneRow(sheet, 1);
-				
-				fieldData = new List<(object fieldType, object fieldName)>();
-				for (int i = 0; i < fieldNames.Length; i++)
-				{
-					fieldData.Add((fieldTypes[i], fieldNames[i]));
-				}
+				fieldData = null;
+				return;
 			}
 
+			var fieldNames = rows[0];
+			var fieldTypes = rows[1];
+
+			fieldData = new List<(object fieldType, object fieldName)>();
+			for (int i = 0; i < fieldNames.Count; i++)
+			{
+				fieldData.Add((fieldTypes[i], fieldNames[i]));
+			}
 		}
 
 		/// <summary>
@@ -55,74 +51,210 @@ namespace UAct.Util
 		/// <param name="FieldValues"></param>
 		public static void ReadValues(string sheetPath, out object[,] FieldValues)
 		{
-
-			// Try to read the Excel file
-			FileInfo fileInfo = TryRead(sheetPath);
-
-			// Not A good file
-			if (fileInfo == null)
+			if (!TryRead(sheetPath, out var worksheet, out var sharedStrings))
 			{
 				Debug.LogWarning("Not a good Excel file or file not found.");
 				FieldValues = null;
 				return;
 			}
 
-			using (ExcelPackage package = new ExcelPackage(fileInfo))
+			var rows = ParseWorksheet(worksheet, sharedStrings);
+			if (rows.Count < 3)
 			{
-				ExcelWorksheet sheet = package.Workbook.Worksheets[1];
-
-				int rowCount = sheet.Dimension.Rows;
-				int colCount = sheet.Dimension.Columns;
-
-				FieldValues = ReadRow(sheet, 3);
+				FieldValues = null;
+				return;
 			}
 
-		}
-		public static object[] ReadOneRow(ExcelWorksheet sheet, int rowIndex = 1, int startCol = 1)
-		{
-			int colCount = sheet.Dimension.Columns;
-			object[] data = new object[colCount];
-			for (int i = startCol; i <= colCount; i++)
+			int rowCount = rows.Count - 2;
+			int colCount = rows[0].Count;
+			FieldValues = new object[rowCount, colCount];
+
+			for (int i = 2; i < rows.Count; i++)
 			{
-				data[i - 1] = sheet.GetValue(rowIndex, i);
-				// Debug.Log(sheet.GetValue(rowIndex, i + 1));
-			}
-			return data;
-
-		}
-
-		public static FileInfo TryRead(string filePath)
-		{
-			// is File Exists
-			if (!File.Exists(filePath))return null;
-
-			// is target type
-			if (Path.GetExtension(filePath) != ".xlsx") return null;
-			
-
-			return new FileInfo(filePath);
-		}
-
-		public static object[,] ReadRow(ExcelWorksheet sheet, int startRow = 1, int startCol = 1)
-		{
-			int colCount = sheet.Dimension.Columns;
-			int rowCount = sheet.Dimension.Rows;
-
-			object[,] data = new object[rowCount - startRow + 1, colCount];
-			// Debug.Log($"startColumn: {startRow}\narrayRowCount: {data.GetLength(0)}\narrayColCount: {data.GetLength(1)}");
-
-			for (int i = startRow; i <= rowCount; i++)
-			{
-				for (int j = startCol; j <= colCount; j++)
+				for (int j = 0; j < rows[i].Count; j++)
 				{
-					// Debug.Log($"i: {i-startRow}, j: {j}");
-					data[i - startRow, j - startCol] = sheet.GetValue(i, j);
+					FieldValues[i - 2, j] = rows[i][j];
+				}
+			}
+		}
+
+		public static object[] ReadOneRow(string sheetPath, int rowIndex = 1, int startCol = 1)
+		{
+			if (!TryRead(sheetPath, out var worksheet, out var sharedStrings))
+			{
+				Debug.LogWarning("Not a good Excel file or file not found.");
+				return null;
+			}
+
+			var rows = ParseWorksheet(worksheet, sharedStrings);
+			if (rowIndex > rows.Count)
+			{
+				return new object[0];
+			}
+
+			var row = rows[rowIndex - 1];
+			if (startCol > row.Count)
+			{
+				return new object[0];
+			}
+
+			int resultSize = row.Count - startCol + 1;
+			object[] data = new object[resultSize];
+			for (int i = startCol - 1; i < row.Count; i++)
+			{
+				data[i - startCol + 1] = row[i];
+			}
+
+			return data;
+		}
+
+		public static bool TryRead(string filePath, out XElement worksheet, out List<string> sharedStrings)
+		{
+			worksheet = null;
+			sharedStrings = new List<string>();
+
+			if (!File.Exists(filePath))
+				return false;
+
+			if (Path.GetExtension(filePath) != ".xlsx")
+				return false;
+
+			try
+			{
+				using (var archive = ZipFile.OpenRead(filePath))
+				{
+					var sheetEntry = archive.Entries.FirstOrDefault(e => e.FullName.EndsWith("sheet1.xml"));
+					if (sheetEntry == null)
+						return false;
+
+					using (var stream = sheetEntry.Open())
+					{
+						worksheet = XElement.Load(stream);
+					}
+
+					var sharedStringsEntry = archive.Entries.FirstOrDefault(e => e.FullName.EndsWith("sharedStrings.xml"));
+					if (sharedStringsEntry != null)
+					{
+						using (var stream = sharedStringsEntry.Open())
+						{
+							var sharedStringsDoc = XDocument.Load(stream);
+							XNamespace ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+							sharedStrings = sharedStringsDoc.Descendants(ns + "t").Select(e => e.Value).ToList();
+						}
+					}
+				}
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Debug.LogError($"Failed to read Excel file: {ex.Message}");
+				return false;
+			}
+		}
+
+		public static object[,] ReadRow(string sheetPath, int startRow = 1, int startCol = 1)
+		{
+			if (!TryRead(sheetPath, out var worksheet, out var sharedStrings))
+			{
+				Debug.LogWarning("Not a good Excel file or file not found.");
+				return null;
+			}
+
+			var rows = ParseWorksheet(worksheet, sharedStrings);
+			if (rows.Count < startRow)
+			{
+				return new object[0, 0];
+			}
+
+			int rowCount = rows.Count - startRow + 1;
+			int colCount = rows.Max(r => r.Count);
+			object[,] data = new object[rowCount, colCount];
+
+			for (int i = startRow - 1; i < rows.Count; i++)
+			{
+				for (int j = startCol - 1; j < rows[i].Count; j++)
+				{
+					data[i - startRow + 1, j] = rows[i][j];
+				}
+			}
+
+			return data;
+		}
+
+		private static List<List<object>> ParseWorksheet(XElement worksheet, List<string> sharedStrings)
+		{
+			XNamespace ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+			var rows = new List<List<object>>();
+
+			var rowElements = worksheet.Descendants(ns + "row");
+			foreach (var rowElement in rowElements)
+			{
+				var cells = new List<object>();
+				var cellElements = rowElement.Descendants(ns + "c");
+
+				int lastColumn = 0;
+				foreach (var cellElement in cellElements)
+				{
+					string cellReference = cellElement.Attribute("r")?.Value;
+					if (cellReference != null)
+					{
+						int currentColumn = GetColumnIndex(cellReference);
+						while (cells.Count < currentColumn - 1)
+						{
+							cells.Add("");
+						}
+					}
+
+					string cellValue = GetCellValue(cellElement, ns, sharedStrings);
+					cells.Add(cellValue);
 				}
 
+				if (cells.Count > 0)
+					rows.Add(cells);
 			}
 
-			return data;
+			return rows;
 		}
 
+		private static string GetCellValue(XElement cellElement, XNamespace ns, List<string> sharedStrings)
+		{
+			var valueElement = cellElement.Element(ns + "v");
+			if (valueElement == null)
+				return "";
+
+			string value = valueElement.Value;
+			string type = cellElement.Attribute("t")?.Value;
+
+			if (type == "s")
+			{
+				int index;
+				if (int.TryParse(value, out index) && index >= 0 && index < sharedStrings.Count)
+				{
+					return sharedStrings[index];
+				}
+				return value;
+			}
+			else if (type == "b")
+			{
+				return value == "1" ? "true" : "false";
+			}
+			else if (type == "str")
+			{
+				return value;
+			}
+
+			return value;
+		}
+
+		private static int GetColumnIndex(string cellReference)
+		{
+			string columnLetters = new string(cellReference.Where(char.IsLetter).ToArray());
+			int columnIndex = 0;
+			for (int i = 0; i < columnLetters.Length; i++)
+			{
+				columnIndex = columnIndex * 26 + (columnLetters[i] - 'A' + 1);
+			}
+			return columnIndex;
+		}
 	}
 }
