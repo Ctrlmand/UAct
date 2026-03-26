@@ -3,13 +3,14 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UAct.Batch
+namespace UAct.AssetsProcessing
 {
 
 	public class FbxToPrefabs : ICommand
 	{
 		public void Execute(ICommandContext context)
 		{
+			if (!Directory.Exists("Assets/Prefabs")) Directory.CreateDirectory("Assets/Prefabs");
 			string savePath = EditorUtility.OpenFolderPanel("Save Prefabs", "Assets/Prefabs", "");
 			if (string.IsNullOrEmpty(savePath)) return;
 

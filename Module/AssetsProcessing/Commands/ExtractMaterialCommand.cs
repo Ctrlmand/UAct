@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System.IO;
 
-namespace UAct.Batch
+namespace UAct.AssetsProcessing
 {
 	using Util;
 
@@ -14,7 +14,7 @@ namespace UAct.Batch
         {
             // find shader
             Shader shader = context.GetData<Shader>();
-            context.ShowAll();
+            context.ShowData();
 
             shader = shader ?? GetPipelineShader();
             if (shader == null)

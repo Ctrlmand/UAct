@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UAct.Batch
+namespace UAct.AssetsProcessing
 {
 	using Util;
     
@@ -178,6 +178,7 @@ namespace UAct.Batch
                 if (matchingTexture != null)
                 {
                     mat.SetTexture(propertyName, matchingTexture);
+                    if (textureType.Equals("Normal")) TexUtil.CheckTextureType(matchingTexture, TextureImporterType.NormalMap);
                     // Debug.Log($"[{mat.name}]FoundTex: {textureType}");
                     continue;
                 }
@@ -192,9 +193,15 @@ namespace UAct.Batch
         private static Dictionary<string, string> ReadMapInfo(string mapInfo)
         {
             Dictionary<string, string> map = new Dictionary<string, string>();
+            if (mapInfo.EndsWith("\n"))
+            {
+                mapInfo = mapInfo.Substring(0, mapInfo.Length - 1);
+            }
             string[] mapData = mapInfo.Split("\n");
             foreach (string rowData in mapData)
             {
+                if (string.IsNullOrWhiteSpace(rowData)) continue;
+
                 string[] itemData = rowData.Split("=>");
                 if (itemData.Length != 2)
                 {
