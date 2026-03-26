@@ -11,8 +11,8 @@ namespace UAct.AssetsProcessing
 		string mapInfo = "BaseMap => _BaseMap\nMetallic => _MetallicGlossMap\nNormal => _BumpMap\nHeight => _ParallaxMap\nAO => _OcclusionMap\nEmission => _EmissionMap";
 		string matPrefix = "";
 		string texPrefix = "";
-		bool useConfigFile = true;
-
+		bool useConfigFile = false;
+		
 		string newName = "";
 		string newNameSuffix = "";
 

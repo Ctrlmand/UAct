@@ -178,6 +178,7 @@ namespace UAct.AssetsProcessing
                 if (matchingTexture != null)
                 {
                     mat.SetTexture(propertyName, matchingTexture);
+                    if (textureType.Equals("Normal")) TexUtil.CheckTextureType(matchingTexture, TextureImporterType.NormalMap);
                     // Debug.Log($"[{mat.name}]FoundTex: {textureType}");
                     continue;
                 }
@@ -199,6 +200,8 @@ namespace UAct.AssetsProcessing
             string[] mapData = mapInfo.Split("\n");
             foreach (string rowData in mapData)
             {
+                if (string.IsNullOrWhiteSpace(rowData)) continue;
+
                 string[] itemData = rowData.Split("=>");
                 if (itemData.Length != 2)
                 {
