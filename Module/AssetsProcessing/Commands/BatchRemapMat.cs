@@ -6,7 +6,7 @@ namespace UAct.AssetsProcessing
 {
 	using Util;
 
-	public class BatchRemapMatCommand : ICommand
+	public class BatchRemapMat : ICommand
 	{
 		string matDir = null;
 		public void Execute(ICommandContext context)

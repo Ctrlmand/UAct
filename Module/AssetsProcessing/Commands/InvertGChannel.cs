@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UAct.AssetsProcessing
 {
     
-    public class InvertGChannelCommand : ICommand
+    public class InvertGChannel : ICommand
     {
         public void Execute(ICommandContext context)
         {

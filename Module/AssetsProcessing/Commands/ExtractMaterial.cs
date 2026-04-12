@@ -8,7 +8,7 @@ namespace UAct.AssetsProcessing
 {
 	using Util;
 
-    public class ExtractMaterialCommand : ICommand
+    public class ExtractMaterial : ICommand
     {
         public void Execute(ICommandContext context)
         {

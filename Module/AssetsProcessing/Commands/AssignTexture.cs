@@ -7,7 +7,7 @@ namespace UAct.AssetsProcessing
 {
 	using Util;
     
-    public class AssignTextureCommand : ICommand
+    public class AssignTexture : ICommand
     {
 
         private static string DEFAULT_MAP_PATH = $"{AssetMethod.GetPresetPath()}/DefaultMap.json";

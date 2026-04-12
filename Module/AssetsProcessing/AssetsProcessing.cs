@@ -30,11 +30,10 @@ namespace UAct.AssetsProcessing
 			// Model Tools
 			GUILayout.Label("Model", EditorStyles.boldLabel);
 			shader = EditorGUILayout.ObjectField("Material Shader", shader, typeof(Shader), false) as Shader;
-			CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext().SetData(shader));
-			GUILayout.Space(10);
-
+			CommandButton<ExtractMaterial>("Extract Material", new BaseCommandContext().SetData(shader));
+			// CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext(shader));
 			remapMatDirectory = EditorGUILayout.ObjectField("Remap Mat Folder", remapMatDirectory, typeof(Object), false);
-			CommandButton<BatchRemapMatCommand>("Remap Material", new BaseCommandContext().SetData(AssetDatabase.GetAssetPath(remapMatDirectory)));
+			CommandButton<BatchRemapMat>("Remap Material", new BaseCommandContext().SetData(AssetDatabase.GetAssetPath(remapMatDirectory)));
 			
 			// Material Tools
 			GUILayout.Space(15);
@@ -53,14 +52,15 @@ namespace UAct.AssetsProcessing
 				mapInfo = EditorGUILayout.TextArea(mapInfo, GUILayout.Height(100), GUILayout.ExpandWidth(true));
 				
 				GUILayout.BeginHorizontal();
-				if (GUILayout.Button("Store Preset")) AssignTextureCommand.StorePreset(mapInfo);
-				if (GUILayout.Button("Generate By Selected Material")) AssignTextureCommand.GenerateMapConfigBySelected(ref mapInfo);
+				if (GUILayout.Button("Store Preset")) AssignTexture.StorePreset(mapInfo);
+				if (GUILayout.Button("Generate By Selected Material")) AssignTexture.GenerateMapConfigBySelected(ref mapInfo);
 				GUILayout.EndHorizontal();
 
 			}
-			CommandButton<AssignTextureCommand>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, new string[] {mapInfo, matPrefix, texPrefix}));
+			CommandButton<AssignTexture>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, new string[] {mapInfo, matPrefix, texPrefix}));
 			matPrefix = EditorGUILayout.TextField("Material Prefix", matPrefix);
 			texPrefix = EditorGUILayout.TextField("Texture Prefix", texPrefix);
+			CommandButton<MainTexAsMatName>("Main Tex As MatName");
 			
 			// Prefab
 			GUILayout.Space(15);
@@ -70,14 +70,14 @@ namespace UAct.AssetsProcessing
 			// Texture Tools
 			GUILayout.Space(10);
 			GUILayout.Label("Texture", EditorStyles.boldLabel);
-			CommandButton<InvertGChannelCommand>("Invert G Channel");
+			CommandButton<InvertGChannel>("Invert G Channel");
 
 			GUILayout.Space(10);
 			GUILayout.Label("资产重命名", EditorStyles.boldLabel);
 			newName = EditorGUILayout.TextField("新名称", newName);
 			newNameSuffix = EditorGUILayout.TextField("后缀", newNameSuffix);
 
-			CommandButton<RenameAssetsCommand>("重命名", new BaseCommandContext().SetData(new string[] { newName, newNameSuffix }));
+			CommandButton<RenameAssets>("重命名", new BaseCommandContext().SetData(new string[] { newName, newNameSuffix }));
 		}
 
 	}

@@ -192,7 +192,6 @@ namespace UAct.Util
 				var cells = new List<object>();
 				var cellElements = rowElement.Descendants(ns + "c");
 
-				int lastColumn = 0;
 				foreach (var cellElement in cellElements)
 				{
 					string cellReference = cellElement.Attribute("r")?.Value;

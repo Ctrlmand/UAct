@@ -5,7 +5,7 @@ namespace UAct.AssetsProcessing
 {
 	using Util;
 
-	public class RenameAssetsCommand : ICommand
+	public class RenameAssets : ICommand
 	{
 		public void Execute(ICommandContext context)
 		{
