@@ -1,10 +1,9 @@
-using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
 namespace UAct.AssetsProcessing
 {
-	public class AutoAssignTextures : EditorWindowBase
+	public class AssetsProcessing : EditorWindowBase
 	{
 		Shader shader;
 		Object remapMatDirectory;
@@ -21,7 +20,7 @@ namespace UAct.AssetsProcessing
 		[MenuItem("UAct/AssetsProcessing", false, 0)]
 		public static void ShowWindow()
 		{
-			var window = GetWindow<AutoAssignTextures>();
+			var window = GetWindow<AssetsProcessing>();
 			window.titleContent = new GUIContent("AssetsProcessing");
 			window.Show();
 		}
