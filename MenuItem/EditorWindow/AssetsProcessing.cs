@@ -70,7 +70,7 @@ namespace UAct.AssetsProcess
 			CommandButton<AssignTexture>("Assign Texture", new AssignTextureContext(useConfigFile, configFile, new string[] {mapInfo, matPrefix, texPrefix}));
 			matPrefix = EditorGUILayout.TextField("Material Prefix", matPrefix);
 			texPrefix = EditorGUILayout.TextField("Texture Prefix", texPrefix);
-			CommandButton<MainTexAsMatName>("Main Tex As MatName");
+			CommandButton<MainTexAsMatName>("Main Tex As MatName", baseContext.SetData(Selection.objects));
 
 		}
 

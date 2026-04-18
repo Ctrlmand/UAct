@@ -6,6 +6,8 @@ namespace UAct
     public abstract class EditorWindowBase<T> : EditorWindow where T : EditorWindowBase<T>
     {
         public const string MenuRoot = "UAct/";
+        protected static BaseCommandContext baseContext = new BaseCommandContext();
+
         protected void CommandButton<U>(string text, ICommandContext context = null) where U : ICommand, new()
         {
             if (GUILayout.Button(text))

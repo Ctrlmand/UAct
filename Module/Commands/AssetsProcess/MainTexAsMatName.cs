@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using System.IO;
+using UnityEditor.VersionControl;
 
 namespace UAct.Command.AssetsProcess
 {
@@ -8,15 +10,22 @@ namespace UAct.Command.AssetsProcess
 	{
 		public void Execute(ICommandContext context)
 		{
-			foreach(Object item in Selection.objects)
+            Object[] objects = context.GetData<Object[]>();
+            if (objects == null)
+            {
+                objects = new Object[]{context.GetData<Object>()};
+            }
+
+			foreach(Object item in objects)
             {
                 if (item is Material material)
                 {
                     string assetPath = AssetDatabase.GetAssetPath(material);
                     string firstTexName = GetFirstTexName(material);
-                    
-                    if (!string.IsNullOrEmpty(firstTexName)) AssetDatabase.RenameAsset(assetPath, firstTexName);
 
+                    WarningIfFileExistsInDirectory(assetPath, firstTexName);
+                    if (!string.IsNullOrEmpty(firstTexName)) AssetDatabase.RenameAsset(assetPath, firstTexName);
+                    EditorGUIUtility.PingObject(material);
                 }
             }
 		}
@@ -30,5 +39,17 @@ namespace UAct.Command.AssetsProcess
             }
             return null;
         }
+
+        private void WarningIfFileExistsInDirectory(string srcFilePath, string targetFileName)
+		{
+            string directoryName = Path.GetDirectoryName(srcFilePath);
+            string fileExtension = Path.GetExtension(srcFilePath);
+            string newAssetPath = Path.Combine(directoryName, targetFileName + fileExtension);
+            if (File.Exists(newAssetPath))
+            {
+                Debug.LogWarning($"File already exists: {newAssetPath}.");
+            }
+            return;
+		}
 	}
 }

@@ -18,6 +18,7 @@ namespace UAct
 
 		public BaseCommandContext SetData<T>(T data)
 		{
+			_data.Clear();
 			_data[typeof(T)] = data;
 			return this;
 		}
