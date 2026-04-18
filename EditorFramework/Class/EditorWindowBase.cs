@@ -10,7 +10,7 @@ namespace UAct
         {
             if (GUILayout.Button(text))
             {
-                CommandCache.CallCommand<U>(context);
+                CommandManager.CallCommand<U>(context);
             }
 
         }

@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace UAct.Generator
+namespace UAct.Command.Generator
 {
 	using System.IO;
 	using UnityEditor;

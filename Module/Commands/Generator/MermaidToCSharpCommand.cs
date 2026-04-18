@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace UAct.Generator
+namespace UAct.Command.Generator
 {
     /// <summary>
     /// Command to convert Mermaid class diagrams from markdown files to C# code

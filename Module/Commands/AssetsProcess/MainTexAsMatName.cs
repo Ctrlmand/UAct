@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace UAct.AssetsProcessing
+namespace UAct.Command.AssetsProcess
 {
 
 	public class MainTexAsMatName : ICommand

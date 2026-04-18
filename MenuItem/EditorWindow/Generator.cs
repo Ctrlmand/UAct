@@ -4,6 +4,7 @@ using System.IO;
 
 namespace UAct.Generator
 {
+	using Command.Generator;
 
 	public class Generator : EditorWindowBase<Generator>
 	{

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System.IO;
 
-namespace UAct.AssetsProcessing
+namespace UAct.Command.AssetsProcess
 {
 	using Util;
 

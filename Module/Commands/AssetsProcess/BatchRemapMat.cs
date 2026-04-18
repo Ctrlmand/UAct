@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-namespace UAct.AssetsProcessing
+namespace UAct.Command.AssetsProcess
 {
 	using Util;
 

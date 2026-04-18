@@ -1,8 +1,9 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UAct.AssetsProcessing
+namespace UAct.AssetsProcess
 {
+	using Command.AssetsProcess;
 	public class AssetsProcessing : EditorWindowBase<AssetsProcessing>
 	{
 		Shader shader;
