@@ -91,8 +91,8 @@ namespace UAct.Command.AssetsProcess
 
         private static Shader GetPipelineShader()
         {
-            RenderPipelineAsset pipelineAsset = GraphicsSettings.currentRenderPipeline;
-            string pipelineAssetName = pipelineAsset.GetType().Name;
+
+            string pipelineAssetName = LoadDefault.GetCurrentRenderPipelineName();
             if (pipelineAssetName.Contains("Universal"))
             {
                 return Shader.Find("Universal Render Pipeline/Lit");
