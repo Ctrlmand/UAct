@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace UAct.ContextMenu
 {
-	using System.Collections.Generic;
-	using System.Security.Cryptography;
 	using Util;
 	public class AssetsMenu : ContextMenuBase
 	{
@@ -57,18 +55,12 @@ namespace UAct.ContextMenu
 			psr.renderMode = ParticleSystemRenderMode.Mesh;
 			psr.mesh = Resources.GetBuiltinResource<Mesh>("Sphere.fbx");
 			psr.alignment = ParticleSystemRenderSpace.Local;
-			psr.material = LoadDefault.GetDefaultParticleMaterial();
+			psr.material = Particle.GetDefaultParticleMaterial();
 
-			var streams = new List<ParticleSystemVertexStream>(new ParticleSystemVertexStream[] { ParticleSystemVertexStream.Position, ParticleSystemVertexStream.Normal, ParticleSystemVertexStream.Color, ParticleSystemVertexStream.UV,
-			ParticleSystemVertexStream.UV2,
-			ParticleSystemVertexStream.Custom1XYZW
-			});
-			psr.SetActiveVertexStreams(streams);
-
-			var cd = ps.customData;
-			cd.enabled = true;
-			cd.SetMode(ParticleSystemCustomData.Custom1, ParticleSystemCustomDataMode.Vector);
+			Particle.SetCustomData(ps);
     	}
+
+
 					
 	}
 }

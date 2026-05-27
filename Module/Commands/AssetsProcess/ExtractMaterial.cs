@@ -92,7 +92,7 @@ namespace UAct.Command.AssetsProcess
         private static Shader GetPipelineShader()
         {
 
-            string pipelineAssetName = LoadDefault.GetCurrentRenderPipelineName();
+            string pipelineAssetName = Particle.GetCurrentRenderPipelineName();
             if (pipelineAssetName.Contains("Universal"))
             {
                 return Shader.Find("Universal Render Pipeline/Lit");
