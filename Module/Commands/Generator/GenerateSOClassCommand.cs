@@ -1,7 +1,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace UAct.Generator
+namespace UAct.Command.Generator
 {
 	using System.Collections.Generic;
 	using System.IO;

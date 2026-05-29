@@ -4,8 +4,9 @@ using System.IO;
 
 namespace UAct.Generator
 {
+	using Command.Generator;
 
-	public class Generator : EditorWindowBase
+	public class Generator : EditorWindowBase<Generator>
 	{
 		// User Input
 		private Object excelFile;
@@ -23,13 +24,8 @@ namespace UAct.Generator
 		}
 
 		// Menu
-		[MenuItem("UAct/Generator", false, 11)]
-		private static void ShowWindow()
-		{
-			EditorWindow window = GetWindow<Generator>();
-			window.titleContent = new GUIContent("Generator");
-			window.Show();
-		}
+		[MenuItem(MenuRoot+nameof(Generator), false, 11)]
+		public static void Open() => ShowWindow(nameof(Generator));
 
 		// Gui Function
 		private void OnGUI()

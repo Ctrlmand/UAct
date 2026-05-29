@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UAct
 {
-    public static class CommandCache
+    public static class CommandManager
     {
         private static Dictionary<Type, ICommand> m_Commands = new Dictionary<Type, ICommand>();
 

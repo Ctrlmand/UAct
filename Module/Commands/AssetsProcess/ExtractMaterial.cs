@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System.IO;
 
-namespace UAct.AssetsProcessing
+namespace UAct.Command.AssetsProcess
 {
 	using Util;
 
@@ -91,8 +91,8 @@ namespace UAct.AssetsProcessing
 
         private static Shader GetPipelineShader()
         {
-            RenderPipelineAsset pipelineAsset = GraphicsSettings.currentRenderPipeline;
-            string pipelineAssetName = pipelineAsset.GetType().Name;
+
+            string pipelineAssetName = Particle.GetCurrentRenderPipelineName();
             if (pipelineAssetName.Contains("Universal"))
             {
                 return Shader.Find("Universal Render Pipeline/Lit");

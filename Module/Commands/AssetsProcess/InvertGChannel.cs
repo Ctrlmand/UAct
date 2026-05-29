@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UAct.AssetsProcessing
+namespace UAct.Command.AssetsProcess
 {
     
     public class InvertGChannel : ICommand
