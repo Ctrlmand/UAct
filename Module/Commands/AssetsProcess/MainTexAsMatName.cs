@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using UnityEditor.VersionControl;
 
 namespace UAct.Command.AssetsProcess
 {
@@ -20,11 +19,12 @@ namespace UAct.Command.AssetsProcess
             {
                 if (item is Material material)
                 {
-                    string assetPath = AssetDatabase.GetAssetPath(material);
                     string firstTexName = GetFirstTexName(material);
+                    if (string.IsNullOrEmpty(firstTexName)) continue;
 
-                    WarningIfFileExistsInDirectory(assetPath, firstTexName);
-                    if (!string.IsNullOrEmpty(firstTexName)) AssetDatabase.RenameAsset(assetPath, firstTexName);
+                    string srcFilePath = AssetDatabase.GetAssetPath(material);
+
+                    RecursiveRename(srcFilePath, firstTexName);
                     EditorGUIUtility.PingObject(material);
                 }
             }
@@ -40,16 +40,28 @@ namespace UAct.Command.AssetsProcess
             return null;
         }
 
-        private void WarningIfFileExistsInDirectory(string srcFilePath, string targetFileName)
+        private void RecursiveRename(string srcFilePath, string targetFileName, int suffix = 1)
 		{
             string directoryName = Path.GetDirectoryName(srcFilePath);
             string fileExtension = Path.GetExtension(srcFilePath);
             string newAssetPath = Path.Combine(directoryName, targetFileName + fileExtension);
-            if (File.Exists(newAssetPath))
+            if (!File.Exists(newAssetPath))
             {
-                Debug.LogWarning($"File already exists: {newAssetPath}.");
+                AssetDatabase.RenameAsset(srcFilePath, targetFileName);
             }
-            return;
+            else
+            {
+                newAssetPath = Path.Combine(directoryName, targetFileName + "_" + suffix + fileExtension);
+                if (!File.Exists(newAssetPath))
+                {
+                    AssetDatabase.RenameAsset(srcFilePath, targetFileName + "_" + suffix);
+                }
+                else
+                {
+                    RecursiveRename(srcFilePath, targetFileName, suffix + 1);
+                }
+            }
+
 		}
 	}
 }
