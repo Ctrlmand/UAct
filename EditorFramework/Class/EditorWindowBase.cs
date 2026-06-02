@@ -5,6 +5,7 @@ namespace UAct
 {
     public abstract class EditorWindowBase<T> : EditorWindow where T : EditorWindowBase<T>
     {
+        protected Vector2 scrollPosition;
         public const string MenuRoot = "UAct/";
         protected static BaseCommandContext baseContext = new BaseCommandContext();
 

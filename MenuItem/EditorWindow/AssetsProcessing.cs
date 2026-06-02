@@ -23,6 +23,7 @@ namespace UAct.AssetsProcess
 		bool modelFlodOut=true, prefabFlodOut=true, materialFlodOut=true, textureFlodOut=true, renameFlodOut=true;
 		void OnGUI()
 		{
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 
 			FlodOutPanel("Model", ref modelFlodOut, ModelGUI);
 
@@ -34,6 +35,7 @@ namespace UAct.AssetsProcess
 
 			FlodOutPanel("Rename", ref renameFlodOut, RenameGUI);
 
+			EditorGUILayout.EndScrollView();
 		}
 
 		void ModelGUI()

@@ -30,6 +30,8 @@ namespace UAct.Generator
 		// Gui Function
 		private void OnGUI()
 		{
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+			
 			GUILayout.Label("Generate SO From Excel", EditorStyles.boldLabel);
 			excelFile = EditorGUILayout.ObjectField("Excel File", excelFile, typeof(Object), false);
 
@@ -42,6 +44,7 @@ namespace UAct.Generator
 
 			CommandButton<MermaidToCSharpCommand>("Convert to C# Classes", GetPathContext(mdFile));
 
+			EditorGUILayout.EndScrollView();
 		}
 
 
