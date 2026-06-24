@@ -7,7 +7,7 @@ namespace UAct.AssetsProcess
 	public class AssetsProcessing : EditorWindowBase<AssetsProcessing>
 	{
 		Shader shader;
-		Object remapMatDirectory;
+		DefaultAsset remapMatDirectory;
 		Object configFile;
 		string mapInfo = "BaseMap => _BaseMap\nMetallic => _MetallicGlossMap\nNormal => _BumpMap\nHeight => _ParallaxMap\nAO => _OcclusionMap\nEmission => _EmissionMap";
 		string matPrefix = "";
@@ -43,7 +43,7 @@ namespace UAct.AssetsProcess
 			shader = EditorGUILayout.ObjectField("Material Shader", shader, typeof(Shader), false) as Shader;
 			CommandButton<ExtractMaterial>("Extract Material", new BaseCommandContext().SetData(shader));
 			// CommandButton<ExtractMaterialCommand>("Extract Material", new BaseCommandContext(shader));
-			remapMatDirectory = EditorGUILayout.ObjectField("Remap Mat Folder", remapMatDirectory, typeof(Object), false);
+			remapMatDirectory = EditorGUILayout.ObjectField("Remap Mat Folder", remapMatDirectory, typeof(DefaultAsset), false) as DefaultAsset;
 			CommandButton<BatchRemapMat>("Remap Material", new BaseCommandContext().SetData(AssetDatabase.GetAssetPath(remapMatDirectory)));
 
 		}

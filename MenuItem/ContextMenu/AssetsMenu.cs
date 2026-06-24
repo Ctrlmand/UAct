@@ -7,17 +7,18 @@ namespace UAct.ContextMenu
 	using Util;
 	public class AssetsMenu : ContextMenuBase
 	{
+		private const string particleSystemPath = "GameObject/Effects/";
 		private const int menuItemIdCounter = 20;
 
-		[MenuItem("GameObject/Effects/Empty Particle System", false, menuItemIdCounter)]
+		[MenuItem(particleSystemPath + "Empty Particle System", false, menuItemIdCounter)]
 		public static void CreateEmptyParticleSystem (MenuCommand command)=>
 			CreateGameobject("Empty Particle System", command.context as GameObject, SetEmptyParticleSystem);
 
-		[MenuItem("GameObject/Effects/Static Particle System", false, menuItemIdCounter)]
+		[MenuItem(particleSystemPath + "Static Particle System", false, menuItemIdCounter)]
 		public static void CreateStaticParticleSystem(MenuCommand command) =>
 			CreateGameobject("Static Particle System", command.context as GameObject, SetStaticParticleSystem);
 
-		[MenuItem("GameObject/Effects/Static Mesh Particle System", false, menuItemIdCounter)]
+		[MenuItem(particleSystemPath + "Static Mesh Particle System", false, menuItemIdCounter)]
 		public static void CreateStaticMeshParticleSystem(MenuCommand command) =>
 			CreateGameobject("Static Mesh Particle System", command.context as GameObject, SetStaticMeshParticleSystem);
 		
